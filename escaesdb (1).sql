@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 06-05-2019 a las 18:57:40
+-- Tiempo de generación: 13-05-2019 a las 04:23:21
 -- Versión del servidor: 10.1.29-MariaDB-6+b1
 -- Versión de PHP: 7.2.4-1+b1
 
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `scaesDBF`
+-- Base de datos: `escaesdb`
 --
 
 -- --------------------------------------------------------
@@ -42,15 +42,15 @@ CREATE TABLE `bitacoralog` (
 
 CREATE TABLE `clientes` (
   `id_cliente` int(11) NOT NULL,
-  `contacto` varchar(25) NOT NULL,
-  `correo` varchar(20) NOT NULL,
-  `telefono` int(10) NOT NULL,
-  `direccion` varchar(30) NOT NULL,
-  `nit` varchar(20) NOT NULL,
-  `tipo_cliente` int(11) NOT NULL,
-  `nombres` char(20) NOT NULL,
-  `apellidos` char(20) NOT NULL,
-  `dui` char(20) NOT NULL
+  `contacto` varchar(25) DEFAULT NULL,
+  `correo` varchar(20) DEFAULT NULL,
+  `telefono` int(10) DEFAULT NULL,
+  `direccion` varchar(30) DEFAULT NULL,
+  `nit` varchar(20) DEFAULT NULL,
+  `tipo_cliente` int(11) DEFAULT NULL,
+  `nombres` char(20) DEFAULT NULL,
+  `apellidos` char(20) DEFAULT NULL,
+  `dui` char(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -101,10 +101,19 @@ CREATE TABLE `det_venta` (
   `id_det_vent` int(11) NOT NULL,
   `id_vent` int(11) NOT NULL,
   `id_inv` int(11) NOT NULL,
+  `n_serie` varchar(10) DEFAULT NULL,
   `producto` char(30) NOT NULL,
   `precio` double NOT NULL,
   `unidades` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `det_venta`
+--
+
+INSERT INTO `det_venta` (`id_det_vent`, `id_vent`, `id_inv`, `n_serie`, `producto`, `precio`, `unidades`) VALUES
+(54, 34, 2, '2347', 'Polen-Botella', 17, 1),
+(55, 34, 1, '2350', 'Miel -Barril', 50, 1);
 
 -- --------------------------------------------------------
 
@@ -115,7 +124,6 @@ CREATE TABLE `det_venta` (
 CREATE TABLE `inventario` (
   `id_inv` int(11) NOT NULL,
   `id_prod` int(11) NOT NULL,
-  `id_muestra` int(11) NOT NULL,
   `humedad` double NOT NULL,
   `color` varchar(30) NOT NULL,
   `peso_neto` double NOT NULL,
@@ -123,7 +131,6 @@ CREATE TABLE `inventario` (
   `existencia` int(11) NOT NULL,
   `fecha_extraccion` date NOT NULL,
   `lote` int(11) NOT NULL,
-  `estado` char(20) NOT NULL,
   `fecha_vencimiento` date NOT NULL,
   `fecha_entrada` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -132,9 +139,9 @@ CREATE TABLE `inventario` (
 -- Volcado de datos para la tabla `inventario`
 --
 
-INSERT INTO `inventario` (`id_inv`, `id_prod`, `id_muestra`, `humedad`, `color`, `peso_neto`, `apiario`, `existencia`, `fecha_extraccion`, `lote`, `estado`, `fecha_vencimiento`, `fecha_entrada`) VALUES
-(1, 1, 2, 0.3, 'amarillo claro', 195, 'San Miguel', 100, '2019-04-02', 1, 'Aceptado', '2020-12-31', '2019-03-14'),
-(2, 2, 1, 0.5, 'amarillo', 70, 'Metapan', 40, '2019-05-04', 1, 'Aceptado', '2020-04-30', '2019-05-05');
+INSERT INTO `inventario` (`id_inv`, `id_prod`, `humedad`, `color`, `peso_neto`, `apiario`, `existencia`, `fecha_extraccion`, `lote`, `fecha_vencimiento`, `fecha_entrada`) VALUES
+(1, 1, 0.3, 'amarillo claro', 195, 'San Miguel', 100, '2019-04-02', 1, '2020-12-31', '2019-03-14'),
+(2, 2, 0.5, 'amarillo', 70, 'Metapan', 40, '2019-05-04', 1, '2020-04-30', '2019-05-05');
 
 -- --------------------------------------------------------
 
@@ -155,7 +162,7 @@ CREATE TABLE `muestras` (
 --
 
 INSERT INTO `muestras` (`id_muestra`, `id_prod`, `detalle_muestra`, `estado`, `fecha_muestra`) VALUES
-(1, 2, 'Muestra producto 2', 'Espera', '2019-05-05'),
+(1, 2, 'Muestra producto 2', 'Rechazado', '2019-05-05'),
 (2, 1, 'Muestra producto 1', 'Aceptado', '2019-05-01');
 
 -- --------------------------------------------------------
@@ -198,9 +205,7 @@ CREATE TABLE `producto` (
 
 INSERT INTO `producto` (`id_prod`, `n_serie`, `producto`, `presentacion`, `precio_venta`, `det_prod`) VALUES
 (1, 2350, 'Miel ', 'Barril', 50, 'Miel de abeja procesada'),
-(2, 2347, 'Polen', 'Botella', 17, 'Polen para mezcla'),
-(6, 123467, 'cera', 'frasco', 12, 'cera ok'),
-(8, 33456, 'Propolio', 'empaque med', 10, 'sin detalle');
+(2, 2347, 'Polen', 'Botella', 17, 'Polen para mezcla');
 
 -- --------------------------------------------------------
 
@@ -286,7 +291,8 @@ CREATE TABLE `usuarios` (
 INSERT INTO `usuarios` (`id_usr`, `id_priv`, `usuario`, `nombres`, `apellidos`, `dui`, `nit`, `password`) VALUES
 (1, 1, 'user1', 'Geovanny', 'Valencia', '092822125', '25071995', 'a012869311d64a44b5a0d567cd20de04'),
 (2, 2, 'KevinRZ', 'Kevin', 'Rodas', '23456', '000000000001', 'a012869311d64a44b5a0d567cd20de04'),
-(3, 1, 'GeovannyX21', 'Geovanny', 'Valencia', '234569002', '345673332', 'a012869311d64a44b5a0d567cd20de04');
+(3, 1, 'GeovannyX21', 'Geovanny', 'Valencia', '234569002', '345673332', 'a012869311d64a44b5a0d567cd20de04'),
+(4, 1, 'jesus', 'jesus ', 'pineda', '05310983-7', '05050505050515', 'd75a5d7fa99eb560a5d4a2b3d7aeae19');
 
 -- --------------------------------------------------------
 
@@ -297,11 +303,20 @@ INSERT INTO `usuarios` (`id_usr`, `id_priv`, `usuario`, `nombres`, `apellidos`, 
 CREATE TABLE `ventas` (
   `id_vent` int(11) NOT NULL,
   `id_cliente` int(11) NOT NULL,
+  `factura` varchar(40) DEFAULT NULL,
   `id_inex` int(11) NOT NULL,
   `cliente` char(30) NOT NULL,
+  `nit` varchar(25) DEFAULT NULL,
   `usuario` char(30) NOT NULL,
-  `fecha` date NOT NULL
+  `fecha` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `ventas`
+--
+
+INSERT INTO `ventas` (`id_vent`, `id_cliente`, `factura`, `id_inex`, `cliente`, `nit`, `usuario`, `fecha`) VALUES
+(34, 1, NULL, 2, 'La Mielita sv', '25071443', 'jesus  pineda', '2019-05-13 03:04:50');
 
 --
 -- Índices para tablas volcadas
@@ -350,8 +365,7 @@ ALTER TABLE `det_venta`
 --
 ALTER TABLE `inventario`
   ADD PRIMARY KEY (`id_inv`),
-  ADD KEY `id_prod` (`id_prod`),
-  ADD KEY `id_muestra` (`id_muestra`);
+  ADD KEY `id_prod` (`id_prod`);
 
 --
 -- Indices de la tabla `muestras`
@@ -418,7 +432,7 @@ ALTER TABLE `bitacoralog`
 -- AUTO_INCREMENT de la tabla `clientes`
 --
 ALTER TABLE `clientes`
-  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT de la tabla `compra`
 --
@@ -433,7 +447,7 @@ ALTER TABLE `det_compras`
 -- AUTO_INCREMENT de la tabla `det_venta`
 --
 ALTER TABLE `det_venta`
-  MODIFY `id_det_vent` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_det_vent` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 --
 -- AUTO_INCREMENT de la tabla `inventario`
 --
@@ -453,12 +467,12 @@ ALTER TABLE `privilegio_usr`
 -- AUTO_INCREMENT de la tabla `producto`
 --
 ALTER TABLE `producto`
-  MODIFY `id_prod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_prod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT de la tabla `proveedor`
 --
 ALTER TABLE `proveedor`
-  MODIFY `id_prov` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_prov` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT de la tabla `tipo_cliente`
 --
@@ -468,12 +482,12 @@ ALTER TABLE `tipo_cliente`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usr` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_usr` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT de la tabla `ventas`
 --
 ALTER TABLE `ventas`
-  MODIFY `id_vent` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_vent` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 --
 -- Restricciones para tablas volcadas
 --
@@ -501,14 +515,12 @@ ALTER TABLE `det_compras`
 -- Filtros para la tabla `det_venta`
 --
 ALTER TABLE `det_venta`
-  ADD CONSTRAINT `det_venta_ibfk_1` FOREIGN KEY (`id_vent`) REFERENCES `ventas` (`id_vent`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `det_venta_ibfk_2` FOREIGN KEY (`id_inv`) REFERENCES `inventario` (`id_inv`);
 
 --
 -- Filtros para la tabla `inventario`
 --
 ALTER TABLE `inventario`
-  ADD CONSTRAINT `inventario_ibfk_2` FOREIGN KEY (`id_muestra`) REFERENCES `muestras` (`id_muestra`),
   ADD CONSTRAINT `inventario_ibfk_3` FOREIGN KEY (`id_prod`) REFERENCES `producto` (`id_prod`);
 
 --
